@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  	<meta charset="utf-8"/>
+    <title>Twitter Clone: Home</title>
+    <link href='https://fonts.googleapis.com/css?family=Quicksand:300,400' rel='stylesheet' type='text/css'>
+	<link href='https://fonts.googleapis.com/css?family=Lato:400,300' rel='stylesheet' type='text/css'>
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.css" rel="stylesheet">   
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
+    <script src = 'https://code.jquery.com/jquery-3.3.1.min.js'></script>
+
+  </head>
+  
+   <body>
+      <div class="nav">
+        <a href="/admin">Home</a>
+        <a href="/admin/chat">Chat</a>
+        <a href="/logout">Log Out</a>
+      </div>	
+      <div class = "header"></div>
+      <div id = "home-con" >
+            <div id="user-info-panel">
+                <div id="user-name">
+                    <%=username%>
+                </div>
+                <div id="user-email">
+                    @<%=username%>
+                </div>
+                <div class="avatar">
+                        <img src="https://abs.twimg.com/sticky/default_profile_images/default_profile_bigger.png" id = "user-picture">
+                        <div class="hover">
+                                <div class="icon-twitter"></div>
+                            </div>
+            
+                </div>
+                <div id="tweet-num">
+                    <br>Tweets <br>       
+                </div>
+                    <%var count = 0%>
+                    <%for(var i = 0; i < Object.keys(tweets).length; i++){%> 
+                    <%if(tweets[i].userid == userid){count++}}%>
+                <div id="number">
+                    <%=count%>          
+                </div>
+            </div>
+            <div id = "feed">
+                <div id = "feed-form">
+                    <input type = "text" id = "feed-form-input" placeholder=" What's happening?">
+                    <button class = "btn-submit" id = "btn-tweet">Tweet</button>
+                </div>
+                
+                
+                
+                <div id="feed-body">
+                    <span class="first"> 
+                            @<%=username%>
+                            <span class="icon-edit new"></span>
+                        </span>
+                        <ul class="timeline">
+                        <% for(var i=0; i<Object.keys(tweets).length; i++) {%>
+
+                            <li>
+                                <div class='avatar'>
+                        <img src='https://abs.twimg.com/sticky/default_profile_images/default_profile_bigger.png'>
+                                    <div class='hover'>
+                                        <div class='icon-twitter'></div>
+                                    </div>
+                                </div>
+                                <div class='bubble-container'>
+                                    <div class='bubble'>
+                                        <h3>@<%=tweets[i].username%></h3> tweeted <br/>
+                                            <%= tweets[i].content%>
+                                        <br>
+                                        <div class='icon-mail-reply action'></div>
+                                        <div class='icon-retweet action'></div>
+                                        <div class='icon-heart'></div>
+                                     </div>    
+                                    <div class='arrow'></div>
+                                </div>
+                            </li>
+                           <% } %>
+                            
+                        </ul>
+                
+                    </div>
+                </div>
+
+            </div>
+        <div class = bottom></div>
+    </body>
+</html>
+
+
+<script>
+    $(function(){
+        $('.btn-submit').on('click',function(event){
+            var thiscontent = document.getElementById('feed-form-input').value;
+            $.ajax({
+                method: 'POST',
+                url: '/admin/tweet',
+                data: {content: thiscontent}
+            }).done(function(response){
+                $('#feed-form-input').val("");
+                $(".timeline").append("<li> <div class='avatar'> <img src='https://abs.twimg.com/sticky/default_profile_images/default_profile_bigger.png'>"
+                                    + "<div class='hover'> <div class='icon-twitter'></div> </div> </div> <div class='bubble-container'> <div class='bubble'>"
+                                    + " <h3>@<%=username%></h3> tweeted <br/> " + thiscontent + "<br>"
+                                    + "<div class='icon-mail-reply action'></div> <div class='icon-retweet action'></div> <div class='icon-heart'>"
+                                    +" </div> </div> </div> <div class='arrow'></div> </div> </li> "
+
+                );
+                var number = parseInt(document.getElementById('number').textContent);
+                number++;
+                console.log(number);
+                $("#number").replaceWith("<div id = 'number'>" + number + "</div>"); 
+
+            });
+        });
+        
+        $('.icon-retweet').on('click',function(event){
+            console.log("hello");
+        });
+
+        $('.icon-heart').on('click',function(event){
+
+                $(this).css('color', "red")
+            
+        });
+
+        $('.icon-mail-reply').on('click',function(event){
+            console.log("hello");
+        });
+
+
+
+    });
+</script>
+        
+
+    
